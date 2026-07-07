@@ -1,80 +1,166 @@
-let messageHistory = [];
-
-// Escuta a tecla Enter no campo de texto para enviar a mensagem
-document.getElementById('userInput').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        sendMessage();
-    }
-});
-
-function appendMessage(text, sender) {
-    const chatBox = document.getElementById('chatBox');
-    const msgDiv = document.createElement('div');
-    msgDiv.classList.add('message', sender);
-    msgDiv.innerText = text;
-    chatBox.appendChild(msgDiv);
-    chatBox.scrollTop = chatBox.scrollHeight;
+:root {
+    --primary: #c5a880;
+    --primary-hover: #b3946b;
+    --bg: #faf8f5;
+    --chat-bg: #ffffff;
+    --text: #3c332a;
+    --bot-msg: #f4efe8;
+    --user-msg: #c5a880;
 }
 
-function clearChat() {
-    document.getElementById('chatBox').innerHTML = '<div class="message bot">Histórico limpo. Como posso ajudar você agora?</div>';
-    messageHistory = [];
+* { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
 }
 
-async function sendMessage() {
-    const apiKey = document.getElementById('apiKey').value.trim();
-    const modelId = document.getElementById('modelId').value.trim();
-    const userInput = document.getElementById('userInput');
-    const systemPrompt = document.getElementById('systemPrompt').value.trim();
-    const text = userInput.value.trim();
+body { 
+    background-color: var(--bg); 
+    color: var(--text); 
+    display: flex; 
+    height: 100vh; 
+}
 
-    if (!text) return;
-    if (!apiKey) {
-        alert('Por favor, insira sua API Key do OpenRouter na barra lateral.');
-        return;
-    }
+.container { 
+    display: flex; 
+    width: 100%; 
+    max-width: 1200px; 
+    margin: auto; 
+    height: 90vh; 
+    background: var(--chat-bg); 
+    box-shadow: 0 10px 30px rgb(60 51 42 / 0.08); 
+    border-radius: 16px; 
+    overflow: hidden; 
+}
 
-    appendMessage(text, 'user');
-    userInput.value = '';
+.sidebar { 
+    width: 320px; 
+    background: #26211c; 
+    color: #f4efe8; 
+    padding: 25px; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 20px; 
+    border-right: 1px solid #eadecc; 
+}
 
-    if (messageHistory.length === 0) {
-        messageHistory.push({ role: "system", content: systemPrompt });
-    }
-    messageHistory.push({ role: "user", content: text });
+.chat-area { 
+    flex: 1; 
+    display: flex; 
+    flex-direction: column; 
+    background: #fdfcfb; 
+}
 
-    appendMessage("Pensando...", "bot");
-    const chatBox = document.getElementById('chatBox');
-    const loadingMsg = chatBox.lastChild;
+h2 { 
+    font-size: 1.1rem; 
+    margin-bottom: 5px; 
+    font-weight: 600; 
+    letter-spacing: 0.5px; 
+    color: #f4efe8; 
+}
 
-    try {
-        const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${apiKey}`,
-                'Content-Type': 'application/json',
-                'HTTP-Referer': window.location.href,
-                'X-Title': 'Hospital Agent Demo'
-            },
-            body: JSON.stringify({
-                model: modelId,
-                messages: messageHistory,
-                temperature: 0.5
-            })
-        });
+label { 
+    font-size: 0.8rem; 
+    color: #b3a79a; 
+    display: block; 
+    margin-top: 10px; 
+}
 
-        const data = await response.json();
-        loadingMsg.remove();
+input, textarea, button { 
+    width: 100%; 
+    padding: 12px; 
+    border-radius: 8px; 
+    border: 1px solid #eadecc; 
+    margin-top: 5px; 
+    font-size: 0.9rem; 
+    transition: all 0.3s; 
+}
 
-        if (data.choices && data.choices[0]) {
-            const reply = data.choices[0].message.content;
-            appendMessage(reply, 'bot');
-            messageHistory.push({ role: "assistant", content: reply });
-        } else {
-            appendMessage("Erro ao obter resposta. Verifique sua chave do OpenRouter ou saldo.", 'bot');
-        }
-    } catch (error) {
-        if (loadingMsg) loadingMsg.remove();
-        appendMessage("Erro de conexão com o servidor do OpenRouter.", 'bot');
-        console.error(error);
-    }
+input:focus, textarea:focus { 
+    outline: none; 
+    border-color: var(--primary); 
+    box-shadow: 0 0 0 2px rgba(197, 168, 128, 0.2); 
+}
+
+textarea { 
+    height: 180px; 
+    resize: none; 
+    font-size: 0.85rem; 
+    line-height: 1.4; 
+}
+
+button { 
+    background: var(--primary); 
+    color: white; 
+    border: none; 
+    font-weight: bold; 
+    cursor: pointer; 
+    margin-top: 10px; 
+}
+
+button:hover { 
+    background: var(--primary-hover); 
+}
+
+.btn-clear { 
+    background: transparent; 
+    border: 1px solid #b3a79a; 
+    color: #b3a79a; 
+}
+
+.btn-clear:hover { 
+    background: rgba(255,255,255,0.05); 
+    color: white; 
+}
+
+.messages { 
+    flex: 1; 
+    padding: 25px; 
+    overflow-y: auto; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 15px; 
+}
+
+.message { 
+    max-width: 70%; 
+    padding: 14px 18px; 
+    border-radius: 14px; 
+    line-height: 1.5; 
+    font-size: 0.95rem; 
+}
+
+.bot { 
+    background: var(--bot-msg); 
+    align-self: flex-start; 
+    border-bottom-left-radius: 4px; 
+    color: var(--text); 
+}
+
+.user { 
+    background: var(--user-msg); 
+    align-self: flex-end; 
+    border-bottom-right-radius: 4px; 
+    color: white; 
+}
+
+.input-area { 
+    padding: 20px; 
+    background: var(--chat-bg); 
+    border-top: 1px solid #f4efe8; 
+    display: flex; 
+    gap: 12px; 
+}
+
+.input-area input { 
+    margin: 0; 
+    flex: 1; 
+    background: #fdfcfb; 
+}
+
+.input-area button { 
+    width: auto; 
+    padding: 0 30px; 
+    margin: 0; 
 }
