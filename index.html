@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assistente Hospitalar (OpenRouter)</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <div class="sidebar">
+        <div>
+            <h2>Configurações do Agente</h2>
+            <label for="apiKey">OpenRouter API Key:</label>
+            <input type="password" id="apiKey" placeholder="sk-or-...">
+        </div>
+        <div>
+            <label for="modelId">ID do Modelo:</label>
+            <input type="text" id="modelId" value="openai/gpt-4o-mini" placeholder="ex: google/gemini-2.5-flash">
+        </div>
+        <div>
+            <label for="systemPrompt">Prompt de Sistema (Persona):</label>
+            <textarea id="systemPrompt">Você é o MedAssist, um atendente virtual de triagem hospitalar empático e eficiente. Seu objetivo é acolher o paciente, perguntar brevemente sobre os sintomas atuais e direcioná-lo para: 
+1. Pronto-Socorro (Casos graves/urgentes).
+2. Ambulatório/Consulta (Sintomas leves/crônicos).
+3. Telemedicina (Dúvidas ou sintomas muito leves).
+Seja conciso, acolhedor e deixe claro que você é uma IA de triagem, não um médico.</textarea>
+        </div>
+        <button id="btnClear" onclick="clearChat()">Limpar Histórico</button>
+    </div>
+
+    <div class="chat-area">
+        <div class="messages" id="chatBox">
+            <div class="message bot">Olá! Sou o assistente virtual do hospital. Como posso ajudar você hoje? Por favor, me conte o que está sentindo.</div>
+        </div>
+        <div class="input-area">
+            <input type="text" id="userInput" placeholder="Digite seus sintomas ou dúvidas aqui...">
+            <button id="btnSend" onclick="sendMessage()">Enviar</button>
+        </div>
+    </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
