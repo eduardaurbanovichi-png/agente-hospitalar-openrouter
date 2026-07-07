@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Assistente Hospitalar (OpenRouter)</title>
+    <title>Assistente Virtual - Clínica de Estética</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,32 +11,34 @@
 <div class="container">
     <div class="sidebar">
         <div>
-            <h2>Configurações do Agente</h2>
-            <label for="apiKey">OpenRouter API Key:</label>
+            <h2>Painel da Clínica</h2>
+            <label for="apiKey">Chave de API OpenRouter:</label>
             <input type="password" id="apiKey" placeholder="sk-or-...">
+            
+            <label for="modelId">ID do Modelo de IA:</label>
+            <input type="text" id="modelId" value="openai/gpt-4o-mini">
         </div>
         <div>
-            <label for="modelId">ID do Modelo:</label>
-            <input type="text" id="modelId" value="openai/gpt-4o-mini" placeholder="ex: google/gemini-2.5-flash">
+            <label for="systemPrompt">Instruções da IA (Persona):</label>
+            <textarea id="systemPrompt">Você é a EstéticaBot, a assistente virtual especializada da nossa clínica de estética avançada. Seu objetivo é realizar um atendimento humanizado, sofisticado, acolhedor e focado no bem-estar e na autoestima do cliente.
+
+Suas principais funções são:
+1. Esclarecer dúvidas gerais sobre nossos procedimentos (ex: Toxina Botulínica, Preenchimento Labial, Bioestimuladores de Colágeno, Limpeza de Pele, Peeling e Protocolos Corporais) de forma simples, explicando os benefícios e destacando a segurança.
+2. Coletar o nome do cliente e o procedimento de interesse para encaminhar para o agendamento de uma avaliação personalizada.
+3. Lembrar sutilmente que os valores exatos e planos de tratamento são definidos apenas na avaliação com o profissional biomédico/esteta.
+
+Regras de comportamento: Use uma linguagem elegante, gentil e use emojis sutis relacionados à beleza (✨, 💆‍♀️, 🤍). Seja concisa e sempre termine a interação com uma pergunta para guiar o cliente rumo ao agendamento da avaliação.</textarea>
         </div>
-        <div>
-            <label for="systemPrompt">Prompt de Sistema (Persona):</label>
-            <textarea id="systemPrompt">Você é o MedAssist, um atendente virtual de triagem hospitalar empático e eficiente. Seu objetivo é acolher o paciente, perguntar brevemente sobre os sintomas atuais e direcioná-lo para: 
-1. Pronto-Socorro (Casos graves/urgentes).
-2. Ambulatório/Consulta (Sintomas leves/crônicos).
-3. Telemedicina (Dúvidas ou sintomas muito leves).
-Seja conciso, acolhedor e deixe claro que você é uma IA de triagem, não um médico.</textarea>
-        </div>
-        <button id="btnClear" onclick="clearChat()">Limpar Histórico</button>
+        <button class="btn-clear" onclick="clearChat()">Limpar Conversa</button>
     </div>
 
     <div class="chat-area">
         <div class="messages" id="chatBox">
-            <div class="message bot">Olá! Sou o assistente virtual do hospital. Como posso ajudar você hoje? Por favor, me conte o que está sentindo.</div>
+            <div class="message bot">Seja muito bem-vinda à nossa clínica! ✨ Me chamo EstéticaBot e estou aqui para cuidar de você hoje. Gostaria de tirar dúvidas sobre algum procedimento ou agendar uma avaliação personalizada? 🤍</div>
         </div>
         <div class="input-area">
-            <input type="text" id="userInput" placeholder="Digite seus sintomas ou dúvidas aqui...">
-            <button id="btnSend" onclick="sendMessage()">Enviar</button>
+            <input type="text" id="userInput" placeholder="Digite sua mensagem aqui...">
+            <button onclick="sendMessage()">Enviar</button>
         </div>
     </div>
 </div>
